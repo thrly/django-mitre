@@ -105,6 +105,7 @@
                 {% endfor %}
 
             </table>
+            {% block pagination %}{% include "mitrecore/pagination/pagination.html" %}{% endblock %}
         {% endblock %}
 
     {% endif %}
