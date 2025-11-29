@@ -1,9 +1,9 @@
 from django.apps import apps
-from django.urls import include, path, re_path
+from django.urls import include
 
-from ..core.utils import produce_paths_for_model
+from ..core.utils import path, produce_paths_for_model, re_path
 from ..core.views import AppIndexView
-from . import patterns, views
+from . import models, patterns, views
 
 
 app_name = "mitrembc"
@@ -18,7 +18,8 @@ urlpatterns = [
     path(
         "matrix/",
         views.MatrixIndexView.as_view(),
-        name="matrix_index",
+        name="index",
+        model=models.Matrix,
     ),
 ]
 

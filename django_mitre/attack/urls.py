@@ -1,9 +1,9 @@
 from django.apps import apps
-from django.urls import include, path, re_path
+from django.urls import include
 
-from ..core.utils import produce_paths_for_model
+from ..core.utils import path, produce_paths_for_model, re_path
 from ..core.views import AppIndexView
-from . import patterns, views
+from . import models, patterns, views
 from .filters import MitreAttackFilterSet
 
 
@@ -51,7 +51,8 @@ urlpatterns.extend(
         re_path(
             r"^matrix/(?P<slug>[-a-z/]+)/$",
             views.MatrixDetailView.as_view(),
-            name="matrix_detail_by_collection",
+            name="detail_by_collection",
+            model=models.Matrix,
         ),
     ]
 )
