@@ -3,6 +3,7 @@
 {% load django_filtering_ui from django_filtering_ui %}
 
 {% load mitreattack_tags %}
+{% load ordered_table_header from mitrecore.ordering %}
 {% load field_value from mitrecore.model %}
 {% load markdown from mitrecore.markdown %}
 
@@ -60,11 +61,11 @@
                     {% block column_headers %}
                         {% for field in view.get_model_fields %}
                             {% if field.name == 'mitre_id' %}
-                                <th>Mitre ID</th>
+                                {% ordered_table_header 'Mitre ID' field.name %}
                             {% elif field.name == 'short_description' %}
-                                <th>Description</th>
+                                {% ordered_table_header 'Description' field.name %}
                             {% else %}
-                                <th>{{ field.verbose_name|capfirst }}</th>
+                                {% ordered_table_header field.verbose_name|capfirst field.name %}
                             {% endif %}
                         {% endfor %}
                     {% endblock %}

@@ -86,6 +86,13 @@ class BaseIndexView(UseMitreCoreTemplatesMixin, ListView):
         filterset = filterset_cls(filter_data)
         return filterset.filter_queryset(queryset)
 
+    def get_ordering(self):
+        # Only allow to order by one field at a time.
+        field_name = self.request.GET.get("order")
+        if field_name and field_name.strip("-") not in self.fields:
+            return None
+        return field_name
+
     def get_queryset(self):
         queryset = super().get_queryset()
         # Filter out all deprecated and revoked content
