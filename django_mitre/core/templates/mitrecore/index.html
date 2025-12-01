@@ -54,10 +54,6 @@
         {% block content_table %}
             <table class="table">
                 <tr>
-                    {% if actions_for_selected %}
-                        <th><input type="checkbox" class="action-toggle"></th>
-                    {% endif %}
-
                     {% block column_headers %}
                         {% for field in view.get_model_fields %}
                             {% if field.name == 'mitre_id' %}
@@ -77,11 +73,6 @@
 
                 {% for object in object_list %}
                     <tr>
-                        {% if actions_for_selected %}
-                            {# {% disallowed_actions_for_instance object as disallowed_actions %} #}
-                            {# <td class="collapse"><input type="checkbox" class="action-select{% for action in disallowed_actions %} action-select-disallow-{{ action }}{% endfor %}" name="action_select" value="{{ object|model_and_pk }}"></td>  #}
-                        {% endif %}
-
                         {% block columns %}
                             {% for field in view.get_model_fields %}
                                 {% if field.name == 'short_description' %}
