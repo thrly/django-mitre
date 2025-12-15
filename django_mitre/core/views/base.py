@@ -65,7 +65,7 @@ class BaseIndexView(UseMitreCoreTemplatesMixin, ListView):
         if not form.is_valid():
             raise Exception(f"Ran into form validation error? {form.errors}")
         q = form.cleaned_data["q"]
-        return q if q else ()
+        return q if q else []
 
     def get_filterset_class(self):
         return self.filterset_class
