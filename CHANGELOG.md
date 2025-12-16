@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Added: Add table header filters to easily filter on the column's data.
 - Added: Provide a changelog for developer history.
 - Changed: Use mutable sequence as return value when no filters are found.
 

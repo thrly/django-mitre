@@ -71,6 +71,22 @@
                     {% endif %}
                 </tr>
 
+                {% block column_filter_headers %}
+                    {% if form.is_enabled %}
+                        <tr>
+                            <form method="post">
+                                {% csrf_token %}
+                                {% for field in form.hidden_fields %}{{ field }}{% endfor %}
+                                {% for field in view.get_filter_form_fields %}
+                                    <th>{{ field | default:"" }}</th>
+                                {% endfor %}
+                                <th>{# Actions #}</th>
+                                <button type="submit" style="display:none" />
+                            </form>
+                        </tr>
+                    {% endif %}
+                {% endblock column_filter_headers %}
+
                 {% for object in object_list %}
                     <tr>
                         {% block columns %}

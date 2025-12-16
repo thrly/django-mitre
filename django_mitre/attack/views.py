@@ -6,7 +6,7 @@ from django.urls import reverse
 
 from ..core.utils.model import model_url_name
 from ..core.utils.prefetch import prefetch_nested_techniques
-from ..core.views.base import BaseDetailView
+from ..core.views.base import BaseDetailView, BaseIndexView
 from . import models
 from .utils import get_model_by_id
 
@@ -19,6 +19,11 @@ def redirect_by_id(request, mitre_id):
         #: Adjust the identifier to its canonical form.
         mitre_id = re.sub("^([a-z]{1,2})", lambda m: m.group(0).upper(), mitre_id)
         return redirect(reverse(model_url_name(model, "detail"), args=[mitre_id]))
+
+
+class TechniqueIndexView(BaseIndexView):
+    model = models.Technique
+    flat_filtering_form_hidden_fields = ["collection*", "tactic*"]
 
 
 class TechniqueDetailView(BaseDetailView):

@@ -23,7 +23,7 @@ classifiers = [
 ]
 dependencies = [
     "django >= 4.2",
-    "django-filtering >= 0.0.9",
+    "django-filtering >= 0.3.2",
     "django-filtering-ui >= 0.0.8",
     "markdown",
     "PyGithub",

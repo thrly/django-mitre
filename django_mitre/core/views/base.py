@@ -4,13 +4,17 @@ Base views for mitre content
 """
 
 import json
+from collections.abc import Generator
 from urllib.parse import urlencode
 
+from django import forms
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.decorators import classonlymethod
 from django.views.generic import DetailView, FormView, ListView
+from django.views.generic.edit import FormMixin
+from django_filtering.form import flat_filtering_form_factory
 
 from ..forms import FilterForm
 from ..utils import model_fields, model_url_name
@@ -30,8 +34,51 @@ class UseMitreCoreTemplatesMixin:
         ]
 
 
-class BaseIndexView(UseMitreCoreTemplatesMixin, ListView):
+class FlatFilteringFormViewMixin(FormMixin):
+    filterset_class = None
+    flat_filtering_form_hidden_fields = ["collection*"]
+
+    def get_form_class(self):
+        return flat_filtering_form_factory(
+            self.filterset_class,
+            hidden_fields=self.flat_filtering_form_hidden_fields,
+        )
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["filterset"] = self.get_filterset()
+        return kwargs
+
+    def form_valid(self, form):
+        # Assign the form for access within `get_success_url`.
+        self.form = form
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        url = reverse(model_url_name(self.model, "index"))
+        qs = urlencode(
+            {
+                "q": json.dumps(self.form.filterset.query_data),
+            }
+        )
+        return f"{url}?{qs}"
+
+
+class BaseIndexView(UseMitreCoreTemplatesMixin, FlatFilteringFormViewMixin, ListView):
     fields = ["mitre_id", "name", "short_description", "collection"]
+    fields_to_form_field = {
+        "mitre_id": "mitre_id__icontains",
+        "name": "name__icontains",
+        "short_description": "description__icontains",
+        "collection": None,
+    }
     template_filename = "index.html"
     paginate_by = 20
     filterset_class = None
@@ -46,6 +93,16 @@ class BaseIndexView(UseMitreCoreTemplatesMixin, ListView):
 
     def get_model_fields(self):
         return model_fields(self.model, self.fields)
+
+    def get_filter_form_fields(self) -> Generator[forms.Field | None, None, None]:
+        form = self.get_form()
+
+        for field in self.fields:
+            form_field_name = self.fields_to_form_field[field]
+            if not form_field_name:
+                yield None
+            else:
+                yield form[form_field_name]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
