@@ -1,6 +1,7 @@
 ## Unreleased
 
-- Fixed: Model title displayed on index listing pages.
+- Added `class="table-filters"` to the tabled form filters row to distinguish from the primary header row.
+- Fixed Model title displayed on index listing pages.
 
 ## v0.2.0 - 2025-Dec-15
 
